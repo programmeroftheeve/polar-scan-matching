@@ -1,0 +1,69 @@
+Copyright (c) 2005-2010, Albert Diosi and Lindsay Kleeman
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+    * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+    * The name of the copyright holders may not be used to endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+**************************************************************************
+
+polar_matching is an implementation of the Polar Scan Matching (PSM)
+approach for matching 2D laser scans and can be downloaded at 
+www.irrc.monash.edu.au/adiosi. More about PSM can be found in:
+
+A. Diosi and L. Kleeman, "Fast Laser Scan Matching using Polar Coordinates",
+Published in 2007 in IJRR
+
+A. Diosi and L. Kleeman, "Laser Scan Matching in Polar Coordinates
+with Application to SLAM " Proceedings of 2005 IEEE/RSJ International
+Conference on Intelligent Robots and Systems, August, 2005, Edmonton,
+Canada
+
+Code for simultaneous localization and mapping (SLAM) is not
+distributed in this package. This package contains only the laser scan
+matching approach PSM (and ICP for comparison) and example code. 
+PSM has been tested with Sick LMS 200, Hokuyo URG-04LX and Hokuyo
+UTM-30LX scans. There are big performance reserves in the 
+implementation as the code has not been optimized yet. polar_matching 
+is still a work in progress.
+
+polar_matching has been tested on Fedora Core 11. The drawing 
+part of polar_matching requires X11, therefore it will not 
+work under non-Unix OS. However the core of scan matching 
+possibly compiles under other operating systems with very 
+little work. 
+
+INSTALLATION INSTRUCTIONS
+
+In a Linux console unzip polar_matching_vX.zip by typing 
+"unzip polar_matching_vX.zip". Go into the directory polar_matching 
+by typing "cd polar_matching". Compile the library and test program 
+by typing "make all". Then run the example program "./example".
+
+
+
+I hope that despite the weak documentation and hard to read coding,
+polar_matching will be useful to someone. If you have got any
+questions or comments please write me an email with PSM on the
+subject line. I'll may be able to help. When you find pairs of
+scans where PSM fails while it should not, please send them my
+way as it may help me to improve PSM.
+
+Albert Diosi, 2005 - 2010
+albert.diosi@gmail.com
+
+
+Change Log
+  2006-2010 - Works with a number of laser scanners. Removed unused code. 
+              Removed psm_c to lessen the work needed for maintenance.
+              Moved psm into a library. Changed ICP's scan projection to that of PSM 
+              to reduce programming time needed to make it work with generic scans. 
+              Changed the license to BSD. Added an example. Improved documentation.
+              There also is a minor interface change: the scan preprocessing 
+              functions are no longer accessible separately. 
+              Use pm_preprocessScan instead. 
+  			    			    			    			  
+  04/11/2005- bug fixed in pm_is_corridor. Bug pointed out by Alan Zhang

@@ -1,0 +1,140 @@
+FREQUENTLY ASKED QUESTIONS FOR POLAR SCAN MATCHING
+
+QUESTIONS:
+
+Have you got any documentation for this code?
+Can I use it under Windows?
+Why does it says during compilation that unistd.h is missing?
+Can I use PSM without odometry?
+What laser range finders are known to work with PSM? 
+I have got this new laser range finder, can you help me to get it to work with PSM?
+Is PSM better than ICP?
+Is there a better algorithm than PSM?
+What is LASER_Y parameter for?
+Why do I get the following error during compilation: No rule to make target "test/main.cpp", needed by "main.o"?
+What are these "not enough points" and "orientation failed" error messages?
+I need a faster laser scan matching method, what should I do?
+
+ANSWERS:
+
+
+Have you got any documentation for this code?
+
+The code comes with a moderate amount of Doxygen style
+documentation. To view it open up doc/index.html in the directory of
+PSM.  However for a better understanding I do recommend reading:
+A. Diosi and L. Kleeman, "Fast Laser Scan Matching using Polar
+Coordinates", Published in 2007 in IJRR.
+
+
+Can I use it under Windows?
+Why does it says during compilation that unistd.h is missing?
+
+This PSM implementation is aimed at Linux. However the core of PSM:
+polar_match.cpp, polar_match.h may be converted with little effort
+to compile under other operating systems.
+
+
+Can I use PSM without odometry?
+
+This implementation of PSM was not specifically designed for use
+without prior pose information provided by odometry, but if you do use
+it for matching laser scans taken at small pose increments, you may
+benefit from reducing the values of the following constants: 
+PM_WEIGHTING_FACTOR, PM_MAX_ERROR, PM_STOP_COND.
+
+
+What laser range finders are known to work with PSM? 
+
+PSM was tested with SICK LMS 200, SICK PLS101-112, Hokuyo URG-04LX
+(including the UG1), Hokuyo UTM-30LX and a home made sensor 
+with 360 degrees field of view.
+
+
+I have got this new laser range finder, can you help me to get it 
+to work with PSM?
+
+In an ideal case the modifications necessary to get PSM working with a
+new laser range finder should be fairly easy: open polar_match.h and
+follow STEP 1) to STEP 3). However if you want me to do it, I may be
+able to help if you send me an email with the specifications of the
+laser, a small sequence of laser scans taken with no more than 20cm 
+separation, a description of the data format and your consent to 
+include the dataset in future releases of PSM. Odometry information
+is not needed in the dataset.
+
+
+Is PSM better than ICP?
+
+A comparison of PSM and ICP can be found in our IJRR'07 paper. In the
+tests, on average, the tested PSM implementation outperformed the
+tested ICP implementation.  However it is possible that someone will
+come along with a clever ICP implementation which will outperform the
+current PSM implementation. Someone also may even find environments
+where PSM will perform worse than most ICP implementations.
+
+
+Is there a better algorithm than PSM?
+
+I am sure there is not one but there are are many. You do not even need 
+to look far to find one. For example if your target environment has 
+specific features such as lines, corners or sharp peaks in the laser range 
+readings, you may be able to extract these features and match them more 
+efficiently than most scan matching approaches that use a point-to-point 
+association rule. 
+
+
+What is LASER_Y parameter for?  
+
+LASER_Y describes the laser's position on the Y axis of the robot's
+coordinate frame. The Y axis points in the direction of forward
+motion of a differential drive mobile robot. This parameter is only
+used when odometry pose is used to initialize a scan match, while the
+laser is mounted on the Y axis of the robot and the laser scan's center
+bearing is aligned with the Y axis. When in doubt, set LASER_Y to 0
+and handle coordinate transforms yourself.  
+
+
+Why do I get the following error during compilation: No rule to make target "test/main.cpp", needed by "main.o"?
+
+Probably the program you used to unzip the zip file did not put the
+sources in the proper sub-directories. Use unzip to extract the
+contents of psm which will hopefully correctly recreate the necessary
+directory structure.
+
+
+What are these "not enough points" and "orientation failed" error messages?
+
+Remember, PSM is a local scan matching method. Therefore if you start
+off with a too large initial pose error then scan matching may diverge
+or it may not going to have enough "overlap", that is not enough corresponding
+points to start with. The messages you are getting are indications
+of this condition. To find out more of what is causing the problem, 
+uncomment #define GR in polar_match.cpp, recompile the PSM library and 
+re-link it with your program. This time, assuming you used the supplied 
+drawing module, you should see the results of the individual scan projection,
+orientation search and translation estimation steps in both Cartesian
+and polar coordinates. Note that upon generating one of the discussed
+error messages, PSM will also throw an exception. Unless you catch
+this exception, it will crash your program. 
+
+
+I need a faster laser scan matching method, what should I do?
+
+I'll assume you have already compiled PSM with the optimization switch
+-O2. Then your next best choice is to reduce the number of points you
+are matching by reducing the angular resolution of your scan. For
+example the Hokuyo URG-LX04 provides up to 682 points over a 240
+degree scan. However in many environments it is sufficient to use
+only every second measured point or even every third. You can also
+reduce the number of iterations by increasing the convergence
+threshold but this will likely reduce your accuracy. In PSM, the most
+computationally expensive bit is the orientation search. Luckily this
+function provides ample opportunities for optimization: you can reduce
+the search region; increase the step size and reorganize the inside
+loop by getting rid of the "if", performe loop unrolling, use SSE2
+instructions... At last you can also wait until I optimize it.
+However, as I work on PSM in my free time whenever I deem it necessary, 
+you may have to wait a long time until I gather enough reasons to do it.
+
+
